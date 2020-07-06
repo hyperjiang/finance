@@ -43,6 +43,29 @@ func PMT(rate float64, nper int, pv float64, fv float64, beginning bool) float64
 	return (-pv*pvif - fv) / ((1.0 + rate*f) * fvifa)
 }
 
+// IPMT returns the interest payment for a given period for an investment based
+// on periodic, constant payments and a constant interest rate.
+func IPMT(rate float64, per int, nper int, pv float64, fv float64, beginning bool) float64 {
+	if (per < 1) || (per >= (nper + 1)) {
+		return 0
+	}
+
+	pmt := PMT(rate, nper, pv, fv, beginning)
+	return calculateInterest(pv, pmt, rate, per-1)
+}
+
+// PPMT returns the payment on the principal for a given period for an investment
+// based on periodic, constant payments and a constant interest rate.
+func PPMT(rate float64, per int, nper int, pv float64, fv float64, beginning bool) float64 {
+	if (per < 1) || (per >= (nper + 1)) {
+		return 0
+	}
+
+	pmt := PMT(rate, nper, pv, fv, beginning)
+	ipmt := calculateInterest(pv, pmt, rate, per-1)
+	return pmt - ipmt
+}
+
 // Present value interest factor
 //
 //                 nper
@@ -70,4 +93,9 @@ func fvifa(rate float64, nper int) float64 {
 	}
 
 	return (math.Pow(1+rate, float64(nper)) - 1) / rate
+}
+
+func calculateInterest(pv float64, pmt float64, rate float64, per int) float64 {
+	return -(pv*math.Pow(1+rate, float64(per))*rate +
+		pmt*(math.Pow(1+rate, float64(per))-1))
 }
