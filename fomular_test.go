@@ -59,3 +59,16 @@ func TestFV(t *testing.T) {
 
 	should.Equal(-817037.6048461755, FV(monthlyRate, periods, pmt, 0, 0))
 }
+
+func TestNPER(t *testing.T) {
+	should := require.New(t)
+
+	monthlyRate := 4.9 / 100 / 12
+	pmt := 5307.00
+	pv := 1000000.00
+
+	should.Equal(0.0, NPER(0, 0, pv, 0, 0))
+	should.Equal(-188.43037497644622, NPER(0, pmt, pv, 0, 0))
+	should.Equal(-140.03715468730746, NPER(monthlyRate, pmt, pv, 0, 0))
+	should.Equal(0.0, NPER(monthlyRate, pmt, pv, 2000000, 0))
+}

@@ -94,6 +94,39 @@ func FV(rate float64, nper int, pmt float64, pv float64, due float64) float64 {
 	return -pmt*(1.0+rate*due)*fvifa - pv*pvif
 }
 
+// NPER returns the number of periods for an investment based on periodic, constant payments and a constant interest rate.
+//
+// If rate = 0:
+//        -(FV + PV)
+// nper = -----------
+//           PMT
+//
+// Else
+//              / PMT * (1 + rate * due) - FV * rate \
+//         log | ------------------------------------ |
+//              \ PMT * (1 + rate * due) + PV * rate /
+// nper = -----------------------------------------------
+//                          log (1 + rate)
+//
+func NPER(rate float64, pmt float64, pv float64, fv float64, due float64) float64 {
+	if rate == 0 && pmt != 0 {
+		return -fv - pv/pmt
+	}
+
+	if rate <= 0.0 {
+		return 0
+	}
+
+	initial := pmt * (1.0 + rate*due)
+
+	tmp := (initial - fv*rate) / (pv*rate + initial)
+	if tmp <= 0.0 {
+		return 0
+	}
+
+	return math.Log10(tmp) / math.Log10(1.0+rate)
+}
+
 // Present value interest factor
 //
 //                 nper
