@@ -124,7 +124,49 @@ func NPER(rate float64, pmt float64, pv float64, fv float64, due float64) float6
 		return 0
 	}
 
-	return math.Log10(tmp) / math.Log10(1.0+rate)
+	return math.Log(tmp) / math.Log(1.0+rate)
+}
+
+// RATE calculates interest rate per period of an Annuity.
+//
+// The basic rate formula derivation is to solve for the future value
+// taking into account the present value:
+// https://en.wikipedia.org/wiki/Future_value
+func RATE(nper int, pmt float64, pv float64, fv float64, due float64, guess float64) float64 {
+	rate := guess
+	i := 0
+	var x0, x1, y, f float64
+
+	x1 = rate
+
+	lamda := func(rate float64) float64 {
+		if math.Abs(rate) < Accuracy {
+			return pv*(1+float64(nper)*rate) + pmt*(1+rate*due)*float64(nper) + fv
+		}
+
+		f = math.Exp(float64(nper) * math.Log(1+rate))
+		return pv*f + pmt*(1/rate+due)*(f-1) + fv
+	}
+
+	y = lamda(rate)
+
+	y0 := pv + pmt*float64(nper) + fv
+	y1 := pv*f + pmt*(1/rate+due)*(f-1) + fv
+
+	// find root by secant method
+	for (math.Abs(y0-y1) > Accuracy) && (i < MaxIterations) {
+		rate = (y1*x0 - y0*x1) / (y1 - y0)
+		x0 = x1
+		x1 = rate
+
+		y = lamda(rate)
+
+		y0 = y1
+		y1 = y
+		i++
+	}
+
+	return rate
 }
 
 // Present value interest factor

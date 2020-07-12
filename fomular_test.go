@@ -1,6 +1,7 @@
 package finance
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -71,4 +72,11 @@ func TestNPER(t *testing.T) {
 	should.Equal(-188.43037497644622, NPER(0, pmt, pv, 0, 0))
 	should.Equal(-140.03715468730746, NPER(monthlyRate, pmt, pv, 0, 0))
 	should.Equal(0.0, NPER(monthlyRate, pmt, pv, 2000000, 0))
+}
+
+func TestRATE(t *testing.T) {
+	should := require.New(t)
+
+	should.Equal(-1.4155398849824252, RATE(12, 3612.82, 41817.82, 0.0, 0.0, 0.1))
+	should.True(math.IsNaN(RATE(12, 3612.82, 41817.82, 0.0, 0.0, 0.0)))
 }
