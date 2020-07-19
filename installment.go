@@ -39,6 +39,16 @@ func (loan Loan) CalculateInterest(period int) float64 {
 	return IPMT(monthlyRate, period, loan.Periods, -loan.Amount, 0, 0)
 }
 
+// CalculateTotalPayment calculates total payment
+func (loan Loan) CalculateTotalPayment() float64 {
+	return php.Round(loan.CalculatePayment()*float64(loan.Periods), 2)
+}
+
+// CalculateTotalInterest calculates total interest
+func (loan Loan) CalculateTotalInterest() float64 {
+	return php.Round(loan.CalculateTotalPayment()-loan.Amount, 2)
+}
+
 // CalculateInstallments calculates installments
 func (loan Loan) CalculateInstallments() []Installment {
 	payment := php.Round(loan.CalculatePayment(), 2)

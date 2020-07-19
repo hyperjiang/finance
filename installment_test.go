@@ -33,4 +33,7 @@ func TestInstallment(t *testing.T) {
 			should.Equal(0, installment.RemainingAmount)
 		}
 	}
+
+	should.Equal(38320.95, loan.CalculateTotalInterest())
+	should.Equal(1038320.95, loan.CalculateTotalPayment())
 }
