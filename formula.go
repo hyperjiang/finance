@@ -127,7 +127,7 @@ func NPER(rate float64, pmt float64, pv float64, fv float64, due float64) float6
 	return math.Log(tmp) / math.Log(1.0+rate)
 }
 
-// RATE calculates interest rate per period of an Annuity.
+// RATE calculates interest rate per period of an annuity.
 //
 // The basic rate formula derivation is to solve for the future value
 // taking into account the present value:
