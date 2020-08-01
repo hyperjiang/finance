@@ -66,13 +66,21 @@ func (loan Loan) CalculateTotalInterest() float64 {
 // CalculateInstallments calculates installments
 func (loan Loan) CalculateInstallments() []Installment {
 	var installments []Installment
-	for p := 1; p < loan.Periods; p++ {
+	remainingAmount := loan.Amount
+	for p := 1; p <= loan.Periods; p++ {
 		var installment Installment
 		installment.Period = p
 		installment.Payment = php.Round(loan.CalculatePayment(p), Precision)
 		installment.Principal = php.Round(loan.CalculatePrincipal(p), Precision)
 		installment.Interest = php.Round(loan.CalculateInterest(p), Precision)
-		installment.RemainingAmount = php.Round(loan.Amount-installment.Principal, Precision)
+
+		remainingAmount = php.Round(remainingAmount-installment.Principal, Precision)
+		installment.RemainingAmount = remainingAmount
+		if p == loan.Periods {
+			installment.RemainingAmount = 0
+		}
+
+		installments = append(installments, installment)
 	}
 
 	return installments

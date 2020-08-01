@@ -8,6 +8,8 @@
 
 Financial functions with the Excel function names and parameter order, along with an installment calculator.
 
+Require go version >= 1.13.
+
 ## Available Functions
 
 - `PMT`: calculates the payment for a loan based on constant payments and a constant interest rate.

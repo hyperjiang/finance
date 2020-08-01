@@ -17,6 +17,8 @@ func TestEqualInstallment(t *testing.T) {
 
 	installments := loan.CalculateInstallments()
 
+	should.Equal(12, len(installments))
+
 	for i, installment := range installments {
 		should.Equal(86526.75, installment.Payment)
 		should.Equal(i+1, installment.Period)
@@ -27,10 +29,16 @@ func TestEqualInstallment(t *testing.T) {
 			should.Equal(919306.59, installment.RemainingAmount)
 		}
 
-		if i == 12 {
+		if i == 1 {
+			should.Equal(81164.12, installment.Principal)
+			should.Equal(5362.62, installment.Interest)
+			should.Equal(838142.47, installment.RemainingAmount)
+		}
+
+		if i == 11 {
 			should.Equal(86024.93, installment.Principal)
 			should.Equal(501.81, installment.Interest)
-			should.Equal(0, installment.RemainingAmount)
+			should.Equal(0.0, installment.RemainingAmount)
 		}
 	}
 
@@ -50,6 +58,8 @@ func TestEqualPrincipal(t *testing.T) {
 
 	installments := loan.CalculateInstallments()
 
+	should.Equal(12, len(installments))
+
 	for i, installment := range installments {
 		should.Equal(i+1, installment.Period)
 		should.Equal(83333.33, installment.Principal)
@@ -60,10 +70,16 @@ func TestEqualPrincipal(t *testing.T) {
 			should.Equal(916666.67, installment.RemainingAmount)
 		}
 
-		if i == 12 {
+		if i == 1 {
+			should.Equal(88680.56, installment.Payment)
+			should.Equal(5347.22, installment.Interest)
+			should.Equal(833333.34, installment.RemainingAmount)
+		}
+
+		if i == 11 {
 			should.Equal(83819.44, installment.Payment)
 			should.Equal(486.11, installment.Interest)
-			should.Equal(0, installment.RemainingAmount)
+			should.Equal(0.0, installment.RemainingAmount)
 		}
 	}
 
